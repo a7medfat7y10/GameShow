@@ -1,0 +1,125 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+body {
+    /*  this a is how to center any content in the middle of the page */
+    background-color: rgb(193, 232, 234);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.wrapper {
+    background-color: rgb(0, 0, 0);
+    width: 800px;
+    padding: 25px;
+    border-radius: 25px;
+
+}
+
+.wrapper header {
+    color: azure;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.wrapper h2 {
+    font-size: 1.6rem;
+}
+
+.wrapper header .column {
+    display: flex;
+    justify-content: center;
+}
+
+.wrapper header .column label {
+    padding-right: 20px;
+}
+
+.volume-slider input {
+    accent-color: rgb(176, 16, 16);
+    cursor: grab;
+}
+
+.checkbox input {
+    position: relative;
+    width: 60px;
+    height: 27px;
+    cursor: pointer;
+    accent-color: rgb(69, 64, 64);
+    border-radius: 30px;
+    background-color: rgb(255, 255, 255);
+    /* to hide the checkbox itself */
+    appearance: none;
+}
+
+.checkbox input::before {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    top: 50%;
+    left: 5px;
+    border-radius: inherit;
+    background: rgb(121, 120, 120);
+    /* to reset top y direction */
+    transform: translateY(-50%);
+    /*  ???????? */
+    transition: all .6s;
+}
+
+.checkbox input:checked::before {
+    position: absolute;
+    content: '';
+    width: 25px;
+    height: 25px;
+    top: 50%;
+    left: 30px;
+    border-radius: inherit;
+    background: rgb(255, 255, 255);
+    transition: all .6s;
+}
+
+.piano-keys {
+    display: flex;
+    margin-top: 50px;
+    color: white;
+    position: relative;
+}
+
+.white-key {
+    text-align: center;
+    position: relative;
+    width: 400px;
+    height: 300px;
+    border-radius: 10px;
+    background-color: white;
+    color: black;
+    border: solid black 2px;
+    list-style-type: none;
+}
+
+.black-key {
+    text-align: center;
+    width: 250px;
+    height: 150px;
+    z-index: 3;
+    /*TOP RIGHT BOTTOM LEFT to make the overlap */
+    margin: 0px -24px 0px -24px;
+    border-radius: 0px 0px 10px 10px;
+    background-color: rgb(0, 0, 0);
+    color: rgb(185, 179, 179);
+    list-style-type: none;
+}
+
+.white-key span {
+    position: absolute;
+    bottom: 20px;
+    color: rgb(84, 82, 82);
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Candy Crush</title>
+    <link rel="stylesheet" href="../CSS/style/style.css">
+    <link rel="icon" type="image/x-icon" href="../IMG/imgs/all.ico">
+  </head>
+  <body>
+    <div class="start-screen">
+      <h1 id="welcome">Welcome to Candy Land
+        <h5>Relax and Start Crushing Candy!</h5>
+      </h1>
+      <div>
+        <img src="../IMG/imgs/all.png" alt="" style="width:500px">
+      </div>
+      <br/>
+      <button class="reset new-game" onclick="newGame()">New Game</button>
+      <h1 class="sorry">Sorry! Please use a PC This game is not available on mobile</h1>
+    </div>
+
+    <div class="game_board">
+
+    </div>
+
+    <div class="score-board">
+      <h2>score</h2>
+      <h2 id="score"></h2>
+      <hr style="width:100px;">
+      <h2>Time Left</h2>
+      <h2 id="timer">0</h2>
+      <button class="reset" onclick="reset()">Restart Game</button>
+      <p>
+        <h2>Instructions</h2>
+        You have 100 seconds to reach score 100!<br>
+        Good Luck!
+        <br><br>
+        Get three or four similiar candies together and earn points!
+      </p>
+    </div>
+    <script src="../JS/script/script.js" charset="utf-8"></script>
+  </body>
+</html>
