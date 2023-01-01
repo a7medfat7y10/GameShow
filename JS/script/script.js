@@ -129,14 +129,16 @@ function squareDown() {
       //and delete the image of the upper one
       candies_arr[i].style.backgroundImage = "";
 
-      //if the square has no image and it is in the first row then generate random candies
-      var firstRow = [0, 1, 2, 3, 4, 5, 6, 7];
-      var isFirstRow = firstRow.includes(i);
-      if (isFirstRow && candies_arr[i].style.backgroundImage === "") {
-        var random_candy = Math.floor(Math.random() * candy_imgs.length);
-        console.log(random_candy + " " + i);
-        candies_arr[i].style.backgroundImage = candy_imgs[random_candy];
-      }
+      
+    }
+
+    //if the square has no image and it is in the first row then generate random candies
+    var firstRow = [0, 1, 2, 3, 4, 5, 6, 7];
+    var isFirstRow = firstRow.includes(i);
+    if (isFirstRow && candies_arr[i].style.backgroundImage === "") {
+      var random_candy = Math.floor(Math.random() * candy_imgs.length);
+      console.log(random_candy + " " + i);
+      candies_arr[i].style.backgroundImage = candy_imgs[random_candy];
     }
   }
 }
