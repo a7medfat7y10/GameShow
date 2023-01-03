@@ -1,3 +1,8 @@
+var game_board = document.querySelector(".game_board");
+var scoreDisplay = document.getElementById("score");
+var timerDisplay = document.getElementById("timer");
+var startscreen = document.querySelector(".start-screen");
+
 var num_of_icons_in_row = 8;
 var candies_arr = [];
 var candy_imgs = [
@@ -14,12 +19,6 @@ var candyDraggedId;
 var candyDroppedOnId;
 var score = 0;
 var counter = 0;
-
-var game_board = document.querySelector(".game_board");
-var scoreDisplay = document.getElementById("score");
-var timerDisplay = document.getElementById("timer");
-var startscreen = document.querySelector(".start-screen");
-//var startscreen = document.querySelector('.result-screen');
 
 //first wait half second to load
 setTimeout(function () {
@@ -62,11 +61,10 @@ startBoard();
 
 for (var i = 0; i < candies_arr.length; i++) {
   candies_arr[i].addEventListener("dragstart", dragStart);
-  candies_arr[i].addEventListener("dragend", dragEnd);
-  candies_arr[i].addEventListener("dragover", dragOver);
   candies_arr[i].addEventListener("dragenter", dragEnter);
-  candies_arr[i].addEventListener("drageleave", dragLeave);
+  candies_arr[i].addEventListener("dragover", dragOver);
   candies_arr[i].addEventListener("drop", dragDrop);
+  candies_arr[i].addEventListener("dragend", dragEnd);
 }
 
 //getting the element dragged
@@ -82,10 +80,6 @@ function dragEnter(e) {
 function dragOver(e) {
   e.preventDefault();
 }
-function dragLeave() {
-  this.style.backgroundImage = "";
-  console.log(this.id + "leave");
-}
 //the element where it is dropped
 function dragDrop() {
   candyDroppedOnImg = this.style.backgroundImage;
@@ -93,29 +87,15 @@ function dragDrop() {
   //switch the dragged and dropped elements' colors
   this.style.backgroundImage = candyDraggedImg;
   candies_arr[candyDraggedId].style.backgroundImage = candyDroppedOnImg;
-  console.log(this.id + "drop");
 }
 function dragEnd() {
-  console.log(this.id + "end");
   //the elements up , down, left, right
-  var validMoves = [
-    candyDraggedId - 1,
-    candyDraggedId - num_of_icons_in_row,
-    candyDraggedId + 1,
-    candyDraggedId + num_of_icons_in_row,
-  ];
-  var isvalidMove = validMoves.includes(candyDroppedOnId);
-
-  //if the id of the replaced square is not null and it is a valid move
-  if (candyDroppedOnId && isvalidMove) {
-    //reset the golabla variable to null
-    candyDroppedOnId = null;
-  }
+  var validMoves = [candyDraggedId - 1, candyDraggedId - num_of_icons_in_row, candyDraggedId + 1, candyDraggedId + num_of_icons_in_row];
   //if the id of the replaced square is not null and it is not a valid move
-  else if (candyDroppedOnId && !isvalidMove) {
+  if (!validMoves.includes(candyDroppedOnId)) {
     candies_arr[candyDroppedOnId].style.backgroundImage = candyDroppedOnImg;
     candies_arr[candyDraggedId].style.backgroundImage = candyDraggedImg;
-  } else candies_arr[candyDraggedId].style.backgroundImage = candyDraggedImg;
+  }
 }
 
 //to fill the gap
@@ -128,8 +108,6 @@ function squareDown() {
         candies_arr[i].style.backgroundImage;
       //and delete the image of the upper one
       candies_arr[i].style.backgroundImage = "";
-
-      
     }
 
     //if the square has no image and it is in the first row then generate random candies
@@ -144,12 +122,12 @@ function squareDown() {
 }
 
 //for row of Four
+//(num_of_icons_in_row * num_of_icons_in_row) - 3 = 61 => the last three will never have 3 similar after
 function checkFourInRow() {
-  //0 to 60 as 61 and 62 and 63 don't have 4 items after them
-  for (i = 0; i < 61; i++) {
+
+  for (i = 0; i < (num_of_icons_in_row * num_of_icons_in_row) - 3; i++) {
     var rowOfFour = [i, i + 1, i + 2, i + 3];
     var candy_img_check = candies_arr[i].style.backgroundImage; //the color to check for
-    var isBlank = candies_arr[i].style.backgroundImage === ""; //check if the square has no image
 
     //these are the not valid elements to check in each row for example row one from 0->7
     //at 5 and 6 and 7 there will be no 4 items ater and it will continue in the second row
@@ -164,7 +142,7 @@ function checkFourInRow() {
       candies_arr[rowOfFour[1]].style.backgroundImage === candy_img_check &&
       candies_arr[rowOfFour[2]].style.backgroundImage === candy_img_check &&
       candies_arr[rowOfFour[3]].style.backgroundImage === candy_img_check &&
-      !isBlank
+      candies_arr[i].style.backgroundImage !== ""
     ) {
       score += 4;
       scoreDisplay.innerHTML = score;
@@ -177,8 +155,9 @@ function checkFourInRow() {
 checkFourInRow();
 
 //for column of Four
+//num_of_icons_in_row * num_of_icons_in_row - 3*num_of_icons_in_row = 40 => the last three rows will not have 4 similar in column
 function checkFourInColumn() {
-  for (i = 0; i < 40; i++) {
+  for (i = 0; i < num_of_icons_in_row * num_of_icons_in_row - 3*num_of_icons_in_row; i++) {
     var columnOfFour = [
       i,
       i + num_of_icons_in_row,
@@ -186,14 +165,13 @@ function checkFourInColumn() {
       i + num_of_icons_in_row * 3,
     ];
     var candy_img_check = candies_arr[i].style.backgroundImage;
-    var isBlank = candies_arr[i].style.backgroundImage === "";
 
     if (
       candies_arr[columnOfFour[0]].style.backgroundImage === candy_img_check &&
       candies_arr[columnOfFour[1]].style.backgroundImage === candy_img_check &&
       candies_arr[columnOfFour[2]].style.backgroundImage === candy_img_check &&
       candies_arr[columnOfFour[3]].style.backgroundImage === candy_img_check &&
-      !isBlank
+      candies_arr[i].style.backgroundImage !== ""
     ) {
       score += 4;
       scoreDisplay.innerHTML = score;
@@ -206,20 +184,21 @@ function checkFourInColumn() {
 checkFourInColumn();
 
 //for row of Three
+//(num_of_icons_in_row * num_of_icons_in_row) - 2 => the last two will never have 2 similar after
 function checkThreeInRow() {
-  for (i = 0; i < 62; i++) {
+  for (i = 0; i < (num_of_icons_in_row * num_of_icons_in_row) - 2; i++) {
     var rowOfThree = [i, i + 1, i + 2];
     var candy_img_check = candies_arr[i].style.backgroundImage;
-    var isBlank = candies_arr[i].style.backgroundImage === "";
 
     var notValid = [6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55];
-    if (notValid.includes(i)) continue;
+    if (notValid.includes(i)) 
+      continue;
 
     if (
       candies_arr[rowOfThree[0]].style.backgroundImage === candy_img_check &&
       candies_arr[rowOfThree[1]].style.backgroundImage === candy_img_check &&
       candies_arr[rowOfThree[2]].style.backgroundImage === candy_img_check &&
-      !isBlank
+      candies_arr[i].style.backgroundImage !== ""
     ) {
       score += 3;
       scoreDisplay.innerHTML = score;
@@ -232,21 +211,21 @@ function checkThreeInRow() {
 checkThreeInRow();
 
 //for column of Three
+//num_of_icons_in_row * num_of_icons_in_row - 2 * num_of_icons_in_row = 48 which is 6 rows
 function checkThreeInCoumn() {
-  for (i = 0; i < 48; i++) {
+  for (i = 0; i < num_of_icons_in_row * num_of_icons_in_row - 2 * num_of_icons_in_row; i++) {
     var columnOfThree = [
       i,
       i + num_of_icons_in_row,
       i + num_of_icons_in_row * 2,
     ];
     var candy_img_check = candies_arr[i].style.backgroundImage;
-    var isBlank = candies_arr[i].style.backgroundImage === "";
 
     if (
       candies_arr[columnOfThree[0]].style.backgroundImage === candy_img_check &&
       candies_arr[columnOfThree[1]].style.backgroundImage === candy_img_check &&
       candies_arr[columnOfThree[2]].style.backgroundImage === candy_img_check &&
-      !isBlank
+      candies_arr[i].style.backgroundImage !== ""
     ) {
       score += 3;
       scoreDisplay.innerHTML = score;
@@ -292,23 +271,3 @@ var timer3 = setInterval(function () {
   }
 }, 100);
 
-// var timer = setInterval(function(){
-//   checkFourInRow();
-//   checkFourInColumn();
-//   checkThreeInRow();
-//   checkThreeInCoumn();
-//   squareDown();
-//   var result = document.getElementById("welcome");
-//   if(score>100 && counter<100){
-//     result.innerHTML ="You Win!";
-//     startscreen.style.opacity = 1;
-//     startscreen.style.height = "100%";
-//     clearInterval(timer);
-//   } else if(counter>100)
-//   {
-//     result.innerHTML ="Game Over!";
-//     startscreen.style.opacity = 1;
-//     startscreen.style.height = "100%";
-//     clearInterval(timer);
-//   }
-// }, 200);
