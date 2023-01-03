@@ -1,8 +1,5 @@
-var game_board = document.querySelector(".game_board");
-var scoreDisplay = document.getElementById("score");
-var timerDisplay = document.getElementById("timer");
-var startscreen = document.querySelector(".start-screen");
-
+var score = 0;
+var counter = 0;
 var num_of_icons_in_row = 8;
 var candies_arr = [];
 var candy_imgs = [
@@ -13,31 +10,31 @@ var candy_imgs = [
   "url(../IMG/imgs/5.png)",
   "url(../IMG/imgs/6.png)",
 ];
+var game_board = document.querySelector(".game_board");
+var scoreDisplay = document.getElementById("score");
+var timerDisplay = document.getElementById("timer");
+var startscreen = document.querySelector(".start-screen");
 var candyDraggedImg;
 var candyDroppedOnImg;
 var candyDraggedId;
 var candyDroppedOnId;
-var score = 0;
-var counter = 0;
+
 
 //first wait half second to load
 setTimeout(function () {
   counter = 0;
   reset();
 }, 500);
-
 function reset() {
   score = 0;
   scoreDisplay.innerHTML = score;
   counter = 0;
 }
-
 //to display the timer
 var timer2 = setInterval(function () {
   timerDisplay.innerHTML = 100 - counter;
   counter++;
 }, 1000);
-
 function newGame() {
   reset();
   startscreen.style.opacity = 0;
@@ -45,58 +42,51 @@ function newGame() {
     startscreen.style.height = 0;
   }, 1000);
 }
-
 function startBoard() {
   for (var i = 0; i < num_of_icons_in_row * num_of_icons_in_row; i++) {
-    var square = document.createElement("div");
-    square.setAttribute("draggable", true);
-    square.setAttribute("id", i);
+    var candy = document.createElement("div");
+    candy.setAttribute("draggable", true);
+    candy.setAttribute("id", i);
     var random_candy = Math.floor(Math.random() * candy_imgs.length);
-    square.style.backgroundImage = candy_imgs[random_candy];
-    game_board.appendChild(square);
-    candies_arr.push(square);
+    candy.style.backgroundImage = candy_imgs[random_candy];
+    game_board.appendChild(candy);
+    candies_arr.push(candy);
   }
 }
 startBoard();
 
 for (var i = 0; i < candies_arr.length; i++) {
-  candies_arr[i].addEventListener("dragstart", dragStart);
-  candies_arr[i].addEventListener("dragenter", dragEnter);
-  candies_arr[i].addEventListener("dragover", dragOver);
-  candies_arr[i].addEventListener("drop", dragDrop);
-  candies_arr[i].addEventListener("dragend", dragEnd);
+  //getting the element dragged
+  candies_arr[i].addEventListener("dragstart", function () {
+    candyDraggedImg = this.style.backgroundImage;
+    candyDraggedId = parseInt(this.id);
+  });
+  //when entering another element
+  candies_arr[i].addEventListener("dragenter", function (e) {
+    e.preventDefault();
+  });
+  //which element Iam over
+  candies_arr[i].addEventListener("dragover", function (e) {
+    e.preventDefault();
+  });
+//the element where it is dropped on
+  candies_arr[i].addEventListener("drop", function () {
+    candyDroppedOnImg = this.style.backgroundImage;
+    candyDroppedOnId = parseInt(this.id);
+    //switch the dragged and dropped elements' colors
+    this.style.backgroundImage = candyDraggedImg;
+    candies_arr[candyDraggedId].style.backgroundImage = candyDroppedOnImg;
+  });
+  //after drop
+  candies_arr[i].addEventListener("dragend", function () {
+    var validMoves = [candyDraggedId - 1, candyDraggedId - num_of_icons_in_row, candyDraggedId + 1, candyDraggedId + num_of_icons_in_row];
+    if (!validMoves.includes(candyDroppedOnId)) {
+      candies_arr[candyDroppedOnId].style.backgroundImage = candyDroppedOnImg;
+      candies_arr[candyDraggedId].style.backgroundImage = candyDraggedImg;
+    }
+  });
 }
 
-//getting the element dragged
-function dragStart() {
-  candyDraggedImg = this.style.backgroundImage;
-  candyDraggedId = parseInt(this.id);
-}
-//when entering another element
-function dragEnter(e) {
-  e.preventDefault();
-}
-//which element Iam over
-function dragOver(e) {
-  e.preventDefault();
-}
-//the element where it is dropped
-function dragDrop() {
-  candyDroppedOnImg = this.style.backgroundImage;
-  candyDroppedOnId = parseInt(this.id);
-  //switch the dragged and dropped elements' colors
-  this.style.backgroundImage = candyDraggedImg;
-  candies_arr[candyDraggedId].style.backgroundImage = candyDroppedOnImg;
-}
-function dragEnd() {
-  //the elements up , down, left, right
-  var validMoves = [candyDraggedId - 1, candyDraggedId - num_of_icons_in_row, candyDraggedId + 1, candyDraggedId + num_of_icons_in_row];
-  //if the id of the replaced square is not null and it is not a valid move
-  if (!validMoves.includes(candyDroppedOnId)) {
-    candies_arr[candyDroppedOnId].style.backgroundImage = candyDroppedOnImg;
-    candies_arr[candyDraggedId].style.backgroundImage = candyDraggedImg;
-  }
-}
 
 //to fill the gap
 function squareDown() {
@@ -109,7 +99,6 @@ function squareDown() {
       //and delete the image of the upper one
       candies_arr[i].style.backgroundImage = "";
     }
-
     //if the square has no image and it is in the first row then generate random candies
     var firstRow = [0, 1, 2, 3, 4, 5, 6, 7];
     var isFirstRow = firstRow.includes(i);
